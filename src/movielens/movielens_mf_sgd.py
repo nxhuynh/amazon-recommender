@@ -4,6 +4,9 @@ from ExplicitMF import ExplicitMF
 import time
 
 INPUT_PATH = 'data/ml-100k/u.data'
+N_LATENT_FACTORS = 80
+REGULARIZATION = 0.01
+LEARNING_RATE = 0.001
 
 def train_test_split(ratings):
     test = np.zeros(ratings.shape)
@@ -34,9 +37,13 @@ train, test = train_test_split(ratings)
 print("Finished reading inputs in " + str(time.time() - start_time) + "s")
 
 start_time = time.time()
-MF_SGD = ExplicitMF(train, 40, learning='sgd', verbose=True)
+MF_SGD = ExplicitMF(train, N_LATENT_FACTORS, learning='sgd', verbose=True,
+                    user_fact_reg=REGULARIZATION,
+                    item_fact_reg=REGULARIZATION,
+                    user_bias_reg=REGULARIZATION,
+                    item_bias_reg=REGULARIZATION)
 iter_array = [1, 2, 5, 10, 25, 50, 100, 200]
-MF_SGD.calculate_learning_curve(iter_array, test, learning_rate=0.001)
+MF_SGD.calculate_learning_curve(iter_array, test, learning_rate=LEARNING_RATE)
 print("Finished SGD in " + str(time.time() - start_time) + "s")
 
 # plot_learning_curve(iter_array, MF_SGD)
