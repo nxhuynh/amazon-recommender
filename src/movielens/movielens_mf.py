@@ -4,10 +4,18 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 import time
+from sklearn.metrics import mean_squared_error
 
 INPUT_PATH = 'data/users_products_matrix_trimmed.csv'
 
 np.random.seed(0)
+
+def get_mse(pred, actual):
+    # Ignore nonzero terms.
+    pred = pred[actual.nonzero()].flatten()
+    actual = actual[actual.nonzero()].flatten()
+    return mean_squared_error(pred, actual)
+
 
 # read users x products matrix
 print("Reading input...")
@@ -99,3 +107,11 @@ print('original matrix')
 with pd.option_context('display.max_rows', None, 'display.max_columns', 3):
     print(A_orig_df)
 """
+
+# calculate MSE
+start_time = time.time()
+A_orig_df = pd.read_csv(INPUT_PATH, index_col=False)
+mse = get_mse(pred, A_orig_df.values)
+print("MSE = " + str(mse))
+print("Finished calculating MSE in " + str(time.time() - start_time) + "s")
+
